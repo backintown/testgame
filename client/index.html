@@ -1,0 +1,29 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script>
+  let ctx = document.getElementById("ctx").getContext("2d");
+  ctx.font = '30px Arial';
+
+  let socket = io();
+
+  socket.on('newPositions', function (data) {
+    ctx.clearRect(0, 0, 500, 500);
+    for (var i = 0; i < data.length; i++)
+      ctx.fillText(data[i].number, data[i].x, data[i].y);
+  });
+
+  document.onkeydown = (event) => {
+    if (event.keyCode === 68) socket.emit('keyPress', { input: 'right', state: true });
+    if (event.keyCode === 65) socket.emit('keyPress', { input: 'left', state: true });
+    if (event.keyCode === 87) socket.emit('keyPress', { input: 'up', state: true });
+    if (event.keyCode === 83) socket.emit('keyPress', { input: 'down', state: true });
+  }
+
+  document.onkeyup = (event) => {
+    if (event.keyCode === 68) socket.emit('keyPress', { input: 'right', state: false });
+    if (event.keyCode === 65) socket.emit('keyPress', { input: 'left', state: false });
+    if (event.keyCode === 87) socket.emit('keyPress', { input: 'up', state: false });
+    if (event.keyCode === 83) socket.emit('keyPress', { input: 'down', state: false });
+  }
+</script>
